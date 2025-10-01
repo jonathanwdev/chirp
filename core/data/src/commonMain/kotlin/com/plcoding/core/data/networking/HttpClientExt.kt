@@ -127,7 +127,7 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): Result<
         in 200..299 -> {
             try {
                 Result.Success(response.body<T>())
-            }catch(err: NoTransformationFoundException) {
+            } catch(e: NoTransformationFoundException) {
                 Result.Failure(DataError.Remote.SERIALIZATION)
             }
         }
@@ -141,9 +141,7 @@ suspend inline fun <reified T> responseToResult(response: HttpResponse): Result<
         429 -> Result.Failure(DataError.Remote.TOO_MANY_REQUESTS)
         500 -> Result.Failure(DataError.Remote.SERVER_ERROR)
         503 -> Result.Failure(DataError.Remote.SERVICE_UNAVAILABLE)
-        else -> {
-            Result.Failure(DataError.Remote.UNKNOWN)
-        }
+        else -> Result.Failure(DataError.Remote.UNKNOWN)
     }
 }
 
