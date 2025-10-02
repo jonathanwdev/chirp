@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.savedstate.SavedState
 import com.plcoding.core.domain.auth.AuthService
+import com.plcoding.core.domain.util.onComplete
 //import com.plcoding.core.domain.util.onComplete
 import com.plcoding.core.domain.util.onFailure
 import com.plcoding.core.domain.util.onSuccess
@@ -65,22 +66,18 @@ class RegisterSuccessViewModel(
                 email = email
             ).onSuccess {
                 eventChannel.send(RegisterSuccessEvent.ResendVerificationEmailSuccess)
-                _state.update {
-                    it.copy(isResendingVerificationEmail = false)
-                }
+
             }.onFailure { error ->
                 _state.update {
                     it.copy(
                         resendVerificationError = error.toUiText(),
-                        isResendingVerificationEmail = false
                     )
                 }
+            }.onComplete {
+                _state.update {
+                    it.copy(isResendingVerificationEmail = false)
+                }
             }
-//                .onComplete {
-//                _state.update {
-//                    it.copy(isResendingVerificationEmail = false)
-//                }
-//            }
         }
     }
 

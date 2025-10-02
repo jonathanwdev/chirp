@@ -51,7 +51,6 @@ class HttpClientFactory(
                 contentType(ContentType.Application.Json)
 
             }
-            expectSuccess = true
         }
 
     }
