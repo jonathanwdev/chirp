@@ -11,8 +11,11 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
 
                 implementation(projects.core.domain)
+                implementation(projects.core.data)
                 implementation(projects.feature.chat.domain)
                 implementation(projects.feature.chat.database)
+                implementation(libs.bundles.ktor.common)
+                implementation(libs.koin.core)
 
             }
         }
@@ -21,7 +24,7 @@ kotlin {
 
         androidMain {
             dependencies {
-
+                implementation(libs.koin.android)
             }
         }
 

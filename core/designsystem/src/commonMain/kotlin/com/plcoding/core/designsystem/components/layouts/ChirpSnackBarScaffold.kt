@@ -17,7 +17,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun ChirpSnackBarScaffold(
-    snackBarHostState: SnackbarHostState,
+    snackBarHostState: SnackbarHostState? = null,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
@@ -28,11 +28,14 @@ fun ChirpSnackBarScaffold(
             .union(WindowInsets.displayCutout)
             .union(WindowInsets.ime),
         snackbarHost = {
-            SnackbarHost(
-                hostState = snackBarHostState,
-                modifier = Modifier
-                    .padding(horizontal = 24.dp)
-            )
+            snackBarHostState?.let {
+                SnackbarHost(
+                    hostState = snackBarHostState,
+                    modifier = Modifier
+                        .padding(horizontal = 24.dp)
+                )
+            }
+
         }
     ) { paddingValues ->
         Box(modifier = Modifier.padding(paddingValues)) {

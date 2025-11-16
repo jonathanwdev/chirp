@@ -8,6 +8,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+                implementation(libs.coil.compose)
+                implementation(libs.coil.network.ktor)
                 implementation(compose.components.resources)
                 implementation(projects.core.presentation)
                 implementation(compose.components.uiToolingPreview)
@@ -28,4 +30,8 @@ kotlin {
         }
     }
 
+}
+
+compose.resources {
+    publicResClass = true
 }

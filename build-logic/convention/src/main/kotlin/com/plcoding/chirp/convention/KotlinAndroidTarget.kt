@@ -13,5 +13,6 @@ internal fun Project.configureAndroidTarget() {
                 jvmTarget.set(JvmTarget.JVM_17)
             }
         }
+
     }
 }

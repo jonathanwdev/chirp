@@ -52,8 +52,8 @@ fun ChirpTextFieldLayout(
         .border(
             width = 1.dp,
             color = when {
-                isFocused -> MaterialTheme.colorScheme.primary
                 isError -> MaterialTheme.colorScheme.error
+                isFocused -> MaterialTheme.colorScheme.primary
                 else -> MaterialTheme.colorScheme.outline
             },
             shape = RoundedCornerShape(8.dp)

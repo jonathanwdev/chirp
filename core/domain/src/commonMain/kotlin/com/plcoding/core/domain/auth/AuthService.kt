@@ -2,8 +2,11 @@ package com.plcoding.core.domain.auth
 
 import com.plcoding.core.domain.util.DataError
 import com.plcoding.core.domain.util.EmptyResult
+import com.plcoding.core.domain.util.Result
 
-interface  AuthService {
+interface AuthService {
+    suspend fun login(email: String, password: String): Result<AuthInfo, DataError.Remote>
+
     suspend fun register(
         username: String,
         email: String,
@@ -12,5 +15,18 @@ interface  AuthService {
 
     suspend fun resendVerificationEmail(
         email: String
+    ): EmptyResult<DataError.Remote>
+
+    suspend fun verifyEmail(
+        token: String
+    ): EmptyResult<DataError.Remote>
+
+    suspend fun forgotPassword(
+        email: String
+    ): EmptyResult<DataError.Remote>
+
+    suspend fun resetPassword(
+        password: String,
+        token: String
     ): EmptyResult<DataError.Remote>
 }
