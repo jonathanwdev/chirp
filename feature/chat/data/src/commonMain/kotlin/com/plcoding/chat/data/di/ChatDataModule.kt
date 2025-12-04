@@ -4,10 +4,16 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.plcoding.chat.data.chat.KtorChatParticipantService
 import com.plcoding.chat.data.chat.KtorChatService
 import com.plcoding.chat.data.chat.OfflineFirstChatRepository
+import com.plcoding.chat.data.chat.WebSocketChatConnectionClient
+import com.plcoding.chat.data.message.OfflineFirstMessageRepository
+import com.plcoding.chat.data.network.KtorWebSocketConnector
 import com.plcoding.chat.database.DatabaseFactory
+import com.plcoding.chat.domain.chat.ChatConnectionClient
 import com.plcoding.chat.domain.chat.ChatParticipantService
 import com.plcoding.chat.domain.chat.ChatRepository
 import com.plcoding.chat.domain.chat.ChatService
+import com.plcoding.chat.domain.message.MessageRepository
+import kotlinx.serialization.json.Json
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -21,6 +27,14 @@ val chatDataModule = module {
     singleOf(::KtorChatParticipantService) bind ChatParticipantService::class
     singleOf(::KtorChatService) bind ChatService::class
     singleOf(::OfflineFirstChatRepository) bind ChatRepository::class
+    singleOf(::WebSocketChatConnectionClient) bind ChatConnectionClient::class
+    singleOf(::OfflineFirstMessageRepository) bind MessageRepository::class
+    singleOf(::KtorWebSocketConnector)
+    single {
+        Json {
+            ignoreUnknownKeys = true
+        }
+    }
 
     single {
         get<DatabaseFactory>()

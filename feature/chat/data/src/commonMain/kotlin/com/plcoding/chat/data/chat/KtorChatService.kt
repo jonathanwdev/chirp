@@ -1,6 +1,7 @@
 package com.plcoding.chat.data.chat
 
 import com.plcoding.chat.data.dto.requests.CreateChatRequestDTO
+import com.plcoding.chat.data.dto.requests.ParticipantsRequest
 import com.plcoding.chat.data.dto.responses.ChatDTO
 import com.plcoding.chat.data.mappers.toDomain
 import com.plcoding.chat.domain.chat.ChatService
@@ -50,6 +51,18 @@ class KtorChatService(
             route = "/chat/$chatId/leave",
 
         ).asEmptyResult()
+    }
+
+    override suspend fun addParticipantsToChat(
+        chatId: String,
+        userIds: List<String>
+    ): Result<Chat, DataError.Remote> {
+        return httpClient.post<ParticipantsRequest, ChatDTO>(
+            route = "/chat/$chatId/add",
+            body = ParticipantsRequest(userIds = userIds)
+        ).map {
+            it.toDomain()
+        }
     }
 
 }

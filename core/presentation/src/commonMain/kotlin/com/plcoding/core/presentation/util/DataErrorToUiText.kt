@@ -19,7 +19,6 @@ import com.plcoding.core.domain.util.DataError
 
 
 fun DataError.toUiText(): UiText {
-    println("***** ERROR IS: $this")
     val resource = when(this) {
         DataError.Local.DISK_FULL -> Res.string.error_disk_full
         DataError.Local.NOT_FOUND -> Res.string.error_not_found

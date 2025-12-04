@@ -36,7 +36,7 @@ import chirp.feature.chat.presentation.generated.resources.no_chats_subtitle
 import com.plcoding.chat.presentation.models.ChatUi
 import com.plcoding.chat.presentation.screens.chat_list.components.ChatListHeader
 import com.plcoding.chat.presentation.screens.chat_list.components.ChatListItemUi
-import com.plcoding.chat.presentation.components.EmptyListSection
+import com.plcoding.chat.presentation.components.EmptySection
 import com.plcoding.core.designsystem.components.brand.ChirpHorizontalDivider
 import com.plcoding.core.designsystem.components.buttons.ChirpFloatingActionButton
 import com.plcoding.core.designsystem.components.dialogs.DestructiveConfirmationDialog
@@ -129,7 +129,7 @@ fun ChatListScreen(
                 }
 
                 state.chats.isEmpty() -> {
-                    EmptyListSection(
+                    EmptySection(
                         title = stringResource(Res.string.no_chats),
                         description = stringResource(Res.string.no_chats_subtitle),
                         modifier = Modifier

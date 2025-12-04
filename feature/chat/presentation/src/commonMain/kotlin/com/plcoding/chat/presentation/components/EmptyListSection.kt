@@ -21,7 +21,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun EmptyListSection(
+fun EmptySection(
     title: String,
     description: String,
     modifier: Modifier = Modifier
@@ -55,7 +55,7 @@ fun EmptyListSection(
 @Composable
 @Preview
 private fun EmptyChatSectionPreview() {    
-    EmptyListSection(
+    EmptySection(
         title = "A title",
         description = "A description"
     )

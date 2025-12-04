@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+
 plugins {
     alias(libs.plugins.convention.kmp.library)
     alias(libs.plugins.convention.build.konfig)
@@ -16,6 +18,8 @@ kotlin {
                 implementation(projects.feature.chat.database)
                 implementation(libs.bundles.ktor.common)
                 implementation(libs.koin.core)
+                implementation(libs.androidx.room.runtime)
+                implementation(libs.sqlite.bundled)
 
             }
         }
@@ -25,6 +29,7 @@ kotlin {
         androidMain {
             dependencies {
                 implementation(libs.koin.android)
+                implementation(libs.androidx.lifecycle.process)
             }
         }
 
@@ -33,6 +38,16 @@ kotlin {
         iosMain {
             dependencies {
 
+            }
+        }
+    }
+
+    targets.withType<KotlinNativeTarget>() {
+        compilations.getByName("main") {
+            cinterops {
+                create("network") {
+                    defFile(file("src/nativeInterop/cinterop/network.def"))
+                }
             }
         }
     }
