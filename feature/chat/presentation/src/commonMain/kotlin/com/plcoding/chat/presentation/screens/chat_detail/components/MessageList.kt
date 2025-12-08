@@ -22,6 +22,7 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun MessageList(
     modifier: Modifier = Modifier,
+    messageWithOpenMenu: MessageUi.LocalUserMessage?,
     messages: List<MessageUi>,
     listState: LazyListState,
     onMessageLongClick: (MessageUi.LocalUserMessage) -> Unit,
@@ -53,11 +54,14 @@ fun MessageList(
             ) { messageItem ->
                 MessageListItemUi(
                     message = messageItem,
+                    messageWithOpenMenu = messageWithOpenMenu,
                     onMessageLongClick = onMessageLongClick,
                     onDeleteClick = onDeleteMessageClick,
                     onRetryClick = onMessageRetryClick,
                     onDismissMessageMenu = onDismissMessageMenu,
-                    modifier = Modifier.fillMaxWidth().animateItem()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .animateItem()
                 )
             }
         }

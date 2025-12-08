@@ -3,7 +3,6 @@ package com.plcoding.chat.presentation.screens.chat_detail.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldState
@@ -34,7 +33,7 @@ import org.jetbrains.compose.resources.vectorResource
 fun MessageBox(
     modifier: Modifier = Modifier,
     messageTextFieldState: TextFieldState,
-    isTextFieldEnabled: Boolean,
+    isButtonEnabled: Boolean,
     connectionState: ConnectionState,
     onSendClick: () -> Unit,
 ) {
@@ -43,7 +42,6 @@ fun MessageBox(
         modifier = modifier,
         state = messageTextFieldState,
         placeholder = stringResource(Res.string.send_a_message),
-        enabled = isTextFieldEnabled,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Send
         ),
@@ -71,7 +69,7 @@ fun MessageBox(
             ChirpButton(
                 text = stringResource(Res.string.send),
                 onClick = onSendClick,
-                enabled = isConnected && isTextFieldEnabled
+                enabled = isConnected && isButtonEnabled
             )
 
         }
@@ -86,7 +84,7 @@ fun MessageBoxOnlinePreview() {
             messageTextFieldState = rememberTextFieldState(
                 initialText = "Hello text field"
             ),
-            isTextFieldEnabled = true,
+            isButtonEnabled = true,
             connectionState = ConnectionState.CONNECTED,
             onSendClick = {}
         )
@@ -99,7 +97,7 @@ fun MessageBoxOfflinePreview() {
     ChirpTheme {
         MessageBox(
             messageTextFieldState = rememberTextFieldState(),
-            isTextFieldEnabled = true,
+            isButtonEnabled = true,
             connectionState = ConnectionState.DISCONNECTED,
             onSendClick = {}
         )
@@ -112,7 +110,7 @@ fun MessageBoxDarkPreview() {
     ChirpTheme(darkTheme = true) {
         MessageBox(
             messageTextFieldState = rememberTextFieldState(),
-            isTextFieldEnabled = true,
+            isButtonEnabled = true,
             connectionState = ConnectionState.DISCONNECTED,
             onSendClick = {}
         )

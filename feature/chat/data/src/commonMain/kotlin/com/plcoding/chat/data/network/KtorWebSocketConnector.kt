@@ -2,11 +2,11 @@ package com.plcoding.chat.data.network
 
 import com.plcoding.chat.data.dto.websocket.WebSocketMessageDTO
 import com.plcoding.chat.data.lifecycle.AppLifecycleObserver
-import com.plcoding.chat.domain.error.ConnectionError
 import com.plcoding.chat.domain.models.ConnectionState
 import com.plcoding.core.data.networking.UrlConstants
 import com.plcoding.core.domain.auth.SessionStorage
 import com.plcoding.core.domain.logging.ChirpLogger
+import com.plcoding.core.domain.util.DataError
 import com.plcoding.core.domain.util.EmptyResult
 import com.plcoding.core.domain.util.Result
 import com.plcoding.feature.chat.data.BuildKonfig
@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
-import kotlin.coroutines.coroutineContext
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -199,10 +199,10 @@ class KtorWebSocketConnector(
         }
     }
 
-    suspend fun sendMessage(message: String): EmptyResult<ConnectionError> {
+    suspend fun sendMessage(message: String): EmptyResult<DataError.Connection> {
         val connectionState = connectionState.value
         if(currentSession == null  || connectionState != ConnectionState.CONNECTED) {
-            return Result.Failure(ConnectionError.NOT_CONNECTED)
+            return Result.Failure(DataError.Connection.NOT_CONNECTED)
         }
         return try {
             currentSession?.send(message)
@@ -210,7 +210,7 @@ class KtorWebSocketConnector(
         }catch(err: Exception) {
             currentCoroutineContext().ensureActive()
             logger.error("Unable to send websocket message", err)
-            Result.Failure(ConnectionError.MESSAGE_SEND_FAILED)
+            Result.Failure(DataError.Connection.MESSAGE_SEND_FAILED)
         }
     }
 }

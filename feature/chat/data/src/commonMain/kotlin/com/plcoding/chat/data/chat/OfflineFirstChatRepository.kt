@@ -3,7 +3,6 @@ package com.plcoding.chat.data.chat
 import com.plcoding.chat.data.mappers.toDomain
 import com.plcoding.chat.data.mappers.toEntity
 import com.plcoding.chat.data.mappers.toLastMessageView
-import com.plcoding.chat.data.network.ConnectivityObserver
 import com.plcoding.chat.database.ChirpChatDatabase
 import com.plcoding.chat.database.entities.ChatInfoEntity
 import com.plcoding.chat.database.entities.ChatParticipantEntity
@@ -19,30 +18,19 @@ import com.plcoding.core.domain.util.Result
 import com.plcoding.core.domain.util.asEmptyResult
 import com.plcoding.core.domain.util.onSuccess
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.supervisorScope
 
 @OptIn(DelicateCoroutinesApi::class)
 class OfflineFirstChatRepository(
     private val chatService: ChatService,
     private val db: ChirpChatDatabase,
-    private val observer: ConnectivityObserver
 ) : ChatRepository {
-
-    init {
-        observer.isConnected.onEach { isConnected ->
-            println("is app connected ? $isConnected")
-        }.launchIn(GlobalScope)
-
-    }
 
     override fun getChats(): Flow<List<Chat>> {
         return db.chatDao

@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -51,6 +52,8 @@ import com.plcoding.core.presentation.util.ObserveAsEvent
 import com.plcoding.core.presentation.util.UiText
 import com.plcoding.core.presentation.util.clearFocusOnTap
 import com.plcoding.core.presentation.util.currentDeviceConfiguration
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -75,6 +78,9 @@ fun ChatDetailRoot(
             ChatDetailEvent.OnChatLeft -> {
                 onBack()
             }
+            ChatDetailEvent.OnNewMessage -> {
+                Unit
+            }
             is ChatDetailEvent.OnError -> {
                 snackBarState.showSnackbar(event.error.asStringAsync())
             }
@@ -85,10 +91,14 @@ fun ChatDetailRoot(
         viewModel.onAction(ChatDetailAction.OnSelectChat(chatId))
     }
 
+    val scope = rememberCoroutineScope()
     BackHandler(
         enabled = !isDetailPresent
     ) {
-        viewModel.onAction(ChatDetailAction.OnSelectChat(null))
+        scope.launch {
+            delay(300)
+            viewModel.onAction(ChatDetailAction.OnSelectChat(null))
+        }
         onBack()
     }
 
@@ -177,6 +187,7 @@ fun ChatDetailScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f),
+                            messageWithOpenMenu = state.messageWithOpenMenu,
                             messages = state.messages,
                             listState = messageListState,
                             onMessageLongClick = { message ->
@@ -204,7 +215,7 @@ fun ChatDetailScreen(
                                     ),
                                 messageTextFieldState = state.messageTextFieldState,
                                 connectionState = state.connectionState,
-                                isTextFieldEnabled = state.canSendMessage,
+                                isButtonEnabled = state.canSendMessage,
                                 onSendClick = {
                                     onAction(ChatDetailAction.OnSendMessageClick)
                                 }
@@ -225,7 +236,7 @@ fun ChatDetailScreen(
                             modifier = Modifier.fillMaxWidth().padding(8.dp),
                             messageTextFieldState = state.messageTextFieldState,
                             connectionState = state.connectionState,
-                            isTextFieldEnabled = state.canSendMessage,
+                            isButtonEnabled = state.canSendMessage,
                             onSendClick = {
                                 onAction(ChatDetailAction.OnSendMessageClick)
                             }
@@ -306,7 +317,6 @@ private fun ChatDetailMessagesScreenPreview() {
                             id = Uuid.random().toString(),
                             content = "Hello world!",
                             deliveryStatus = ChatMessageDeliveryStatus.SENT,
-                            isMenuOpen = false,
                             formattedSentTime = UiText.DynamicString("Friday, Aug 20")
                         )
                     } else {

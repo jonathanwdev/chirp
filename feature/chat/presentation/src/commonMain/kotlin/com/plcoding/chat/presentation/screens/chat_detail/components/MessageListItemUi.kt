@@ -28,6 +28,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun MessageListItemUi(
     modifier: Modifier = Modifier,
     message: MessageUi,
+    messageWithOpenMenu: MessageUi.LocalUserMessage?,
     onDismissMessageMenu: () -> Unit,
     onDeleteClick: (MessageUi.LocalUserMessage) -> Unit,
     onRetryClick: (MessageUi.LocalUserMessage) -> Unit,
@@ -43,10 +44,11 @@ fun MessageListItemUi(
             is MessageUi.LocalUserMessage -> {
                 LocalUserMessageUi(
                     message = message,
+                    messageWithOpenMenu = messageWithOpenMenu,
                     onDeleteClick = { onDeleteClick(message) },
                     onRetryClick = { onRetryClick(message) },
                     onDismissMessageMenu = onDismissMessageMenu,
-                    onMessageLongClick = { onMessageLongClick(message) }
+                    onMessageLongClick = { onMessageLongClick(message) },
                 )
             }
             is MessageUi.OtherUserMessage -> {
@@ -93,13 +95,13 @@ private fun MessageListItemUiLocalUserPreview() {
                 id = "1",
                 content = "This is a message from the local user.",
                 deliveryStatus = ChatMessageDeliveryStatus.SENT,
-                isMenuOpen = true,
                 formattedSentTime = UiText.DynamicString("10:45")
             ),
             onDismissMessageMenu = {},
             onDeleteClick = {},
             onRetryClick = {},
-            onMessageLongClick = {}
+            onMessageLongClick = {},
+            messageWithOpenMenu = null,
         )
     }
 }
@@ -114,13 +116,13 @@ private fun MessageListItemUiLocalUserDarkPreview() {
                 id = "1",
                 content = "This is a message from the local user.",
                 deliveryStatus = ChatMessageDeliveryStatus.SENT,
-                isMenuOpen = false,
                 formattedSentTime = UiText.DynamicString("10:45")
             ),
             onDismissMessageMenu = {},
             onDeleteClick = {},
             onRetryClick = {},
-            onMessageLongClick = {}
+            onMessageLongClick = {},
+            messageWithOpenMenu = null,
         )
     }
 }
@@ -135,13 +137,13 @@ private fun MessageListItemUiLocalUserErrorPreview() {
                 id = "1",
                 content = "This is a message from the local user.",
                 deliveryStatus = ChatMessageDeliveryStatus.FAILED,
-                isMenuOpen = false,
                 formattedSentTime = UiText.DynamicString("10:45")
             ),
             onDismissMessageMenu = {},
             onDeleteClick = {},
             onRetryClick = {},
-            onMessageLongClick = {}
+            onMessageLongClick = {},
+            messageWithOpenMenu = null,
         )
     }
 }
@@ -155,13 +157,13 @@ private fun MessageListItemUiLocalUserSendingPreview() {
                 id = "1",
                 content = "This is a message from the local user.",
                 deliveryStatus = ChatMessageDeliveryStatus.SENDING,
-                isMenuOpen = false,
                 formattedSentTime = UiText.DynamicString("10:45")
             ),
             onDismissMessageMenu = {},
             onDeleteClick = {},
             onRetryClick = {},
-            onMessageLongClick = {}
+            onMessageLongClick = {},
+            messageWithOpenMenu = null,
         )
     }
 }
@@ -176,13 +178,13 @@ private fun MessageListItemUiLocalUserMenOpenPreview() {
                 id = "1",
                 content = "This is a message from the local user.",
                 deliveryStatus = ChatMessageDeliveryStatus.SENDING,
-                isMenuOpen = true,
                 formattedSentTime = UiText.DynamicString("10:45")
             ),
             onDismissMessageMenu = {},
             onDeleteClick = {},
             onRetryClick = {},
-            onMessageLongClick = {}
+            onMessageLongClick = {},
+            messageWithOpenMenu = null,
         )
     }
 }
@@ -206,7 +208,8 @@ private fun MessageListItemUiOtherUserPreview() {
             onDismissMessageMenu = {},
             onDeleteClick = {},
             onRetryClick = {},
-            onMessageLongClick = {}
+            onMessageLongClick = {},
+            messageWithOpenMenu = null,
         )
     }
 }
@@ -232,7 +235,8 @@ private fun MessageListItemUiOtherUserDarkPreview() {
             onDismissMessageMenu = {},
             onDeleteClick = {},
             onRetryClick = {},
-            onMessageLongClick = {}
+            onMessageLongClick = {},
+            messageWithOpenMenu = null,
         )
     }
 }

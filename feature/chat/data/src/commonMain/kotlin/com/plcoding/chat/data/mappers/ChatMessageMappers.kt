@@ -8,6 +8,8 @@ import com.plcoding.chat.database.entities.ChatMessageEntity
 import com.plcoding.chat.database.view.LastMessageView
 import com.plcoding.chat.domain.models.ChatMessage
 import com.plcoding.chat.domain.models.ChatMessageDeliveryStatus
+import com.plcoding.chat.domain.models.OutgoingNewMessage
+import kotlin.time.Clock
 import kotlin.time.Instant
 
 fun ChatMessageDTO.toDomain(): ChatMessage {
@@ -23,12 +25,12 @@ fun ChatMessageDTO.toDomain(): ChatMessage {
 
 fun ChatMessageEntity.toDomain(): ChatMessage {
     return ChatMessage(
-        id = chatId,
+        id = messageId,
         content = content,
         senderId = senderId,
         createdAt = Instant.fromEpochMilliseconds(timestamp),
         chatId = chatId,
-        deliveryStatus = ChatMessageDeliveryStatus.SENT
+        deliveryStatus = ChatMessageDeliveryStatus.valueOf(deliveryStatus)
     )
 }
 
@@ -85,4 +87,26 @@ fun IncomingWebSocketDTO.NewMessageDTO.toEntity(): ChatMessageEntity {
         deliveryStatus = ChatMessageDeliveryStatus.SENT.name
     )
 
+}
+
+fun OutgoingNewMessage.toWebSocketDTO() : OutgoingWebSocketDTO.NewMessage {
+    return OutgoingWebSocketDTO.NewMessage(
+        messageId = messageId,
+        content = content,
+        chatId = chatId,
+    )
+}
+
+fun OutgoingWebSocketDTO.NewMessage.toEntity(
+    senderId: String,
+    deliveryStatus: ChatMessageDeliveryStatus
+): ChatMessageEntity {
+    return ChatMessageEntity(
+        messageId = messageId,
+        content = content,
+        senderId = senderId,
+        chatId = chatId,
+        timestamp = Clock.System.now().toEpochMilliseconds(),
+        deliveryStatus = deliveryStatus.name
+    )
 }

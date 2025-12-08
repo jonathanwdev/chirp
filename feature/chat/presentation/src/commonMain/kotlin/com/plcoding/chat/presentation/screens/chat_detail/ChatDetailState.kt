@@ -19,6 +19,7 @@ data class ChatDetailState(
     val bannerState: BannerState = BannerState(),
     val isChatOptionsOpen: Boolean = false,
     val isNearBottom: Boolean = false,
+    val messageWithOpenMenu: MessageUi.LocalUserMessage? = null,
     val connectionState: ConnectionState = ConnectionState.DISCONNECTED
 )
 
