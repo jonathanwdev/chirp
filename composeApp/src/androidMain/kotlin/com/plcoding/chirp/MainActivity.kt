@@ -1,10 +1,13 @@
 package com.plcoding.chirp
 
+import android.app.ComponentCaller
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.plcoding.chirp.navigation.ExternalUriHandler
 
 class MainActivity : ComponentActivity() {
 
@@ -18,6 +21,8 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        handleChatMessageDeepLinking(intent)
         setContent {
             App(
                 onAuthenticationChecked = {
@@ -25,6 +30,19 @@ class MainActivity : ComponentActivity() {
                 }
 
             )
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleChatMessageDeepLinking(intent)
+    }
+
+    private fun handleChatMessageDeepLinking(intent: Intent) {
+        val chatId = intent.getStringExtra("chatId") ?: intent.extras?.getString("chatId")
+        if(chatId != null) {
+            val deepLinkUrl = "chirp://chat_detail/$chatId"
+            ExternalUriHandler.onNewUri(deepLinkUrl)
         }
     }
 }

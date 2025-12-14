@@ -1,6 +1,8 @@
 package com.plcoding.chat.presentation.screens.chat_detail
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
@@ -22,8 +25,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
@@ -31,6 +37,8 @@ import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import chirp.feature.chat.presentation.generated.resources.Res
@@ -43,8 +51,11 @@ import com.plcoding.chat.presentation.components.EmptySection
 import com.plcoding.chat.presentation.models.ChatUi
 import com.plcoding.chat.presentation.models.MessageUi
 import com.plcoding.chat.presentation.screens.chat_detail.components.ChatDetailHeader
+import com.plcoding.chat.presentation.screens.chat_detail.components.DateChip
+import com.plcoding.chat.presentation.screens.chat_detail.components.MessageBannerListener
 import com.plcoding.chat.presentation.screens.chat_detail.components.MessageBox
 import com.plcoding.chat.presentation.screens.chat_detail.components.MessageList
+import com.plcoding.chat.presentation.screens.chat_detail.components.PaginationScrollListener
 import com.plcoding.core.designsystem.components.avatar.ChatParticipantUi
 import com.plcoding.core.designsystem.theme.ChirpTheme
 import com.plcoding.core.designsystem.theme.extended
@@ -53,6 +64,7 @@ import com.plcoding.core.presentation.util.UiText
 import com.plcoding.core.presentation.util.clearFocusOnTap
 import com.plcoding.core.presentation.util.currentDeviceConfiguration
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -72,14 +84,18 @@ fun ChatDetailRoot(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val snackBarState = remember { SnackbarHostState() }
+    val messageListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
 
-    ObserveAsEvent(viewModel.events) {event ->
-        when(event) {
+    ObserveAsEvent(viewModel.events) { event ->
+        when (event) {
             ChatDetailEvent.OnChatLeft -> {
                 onBack()
             }
             ChatDetailEvent.OnNewMessage -> {
-                Unit
+                scope.launch {
+                    messageListState.animateScrollToItem(0)
+                }
             }
             is ChatDetailEvent.OnError -> {
                 snackBarState.showSnackbar(event.error.asStringAsync())
@@ -89,9 +105,11 @@ fun ChatDetailRoot(
 
     LaunchedEffect(chatId) {
         viewModel.onAction(ChatDetailAction.OnSelectChat(chatId))
+        if(chatId != null) {
+            messageListState.scrollToItem(0)
+        }
     }
 
-    val scope = rememberCoroutineScope()
     BackHandler(
         enabled = !isDetailPresent
     ) {
@@ -106,9 +124,11 @@ fun ChatDetailRoot(
         state = state,
         isDetailPresent = isDetailPresent,
         snackBarState = snackBarState,
-        onAction =  { action ->
-            when(action) {
+        messageListState = messageListState,
+        onAction = { action ->
+            when (action) {
                 is ChatDetailAction.OnChatMembersClick -> onChatMembersClick()
+                is ChatDetailAction.OnBackClick -> onBack()
                 else -> Unit
             }
             viewModel.onAction(action)
@@ -121,10 +141,52 @@ fun ChatDetailScreen(
     state: ChatDetailState,
     isDetailPresent: Boolean,
     snackBarState: SnackbarHostState,
+    messageListState: LazyListState,
     onAction: (ChatDetailAction) -> Unit,
 ) {
     val configuration = currentDeviceConfiguration()
-    val messageListState = rememberLazyListState()
+
+    val realMessages = remember(state.messages) {
+        state.messages.filter { it is MessageUi.LocalUserMessage || it is MessageUi.OtherUserMessage }.size
+    }
+    var headerHeight by remember {
+        mutableStateOf(0.dp)
+    }
+    val density = LocalDensity.current
+
+
+    LaunchedEffect(messageListState) {
+        snapshotFlow {
+            messageListState.firstVisibleItemIndex to messageListState.layoutInfo.totalItemsCount
+        }.filter { (firstVisibleIndex, totalItemsCount) ->
+            firstVisibleIndex >= 0 && totalItemsCount > 0
+        }.collect { (firstVisibleItemIndex, _) ->
+            onAction(ChatDetailAction.OnFirstVisibleIndexChanged(firstVisibleItemIndex))
+        }
+    }
+
+    MessageBannerListener(
+        lazyListState = messageListState,
+        messages = state.messages,
+        isBannerVisible = state.bannerState.isVisible,
+        onShowBanner = {
+            onAction(ChatDetailAction.OnTopVisibleIndexChanged(it))
+        },
+        onHideBanner = {
+            onAction(ChatDetailAction.OnHideBanner)
+        }
+    )
+
+
+    PaginationScrollListener(
+        lazyListState = messageListState,
+        itemCount = realMessages,
+        isPaginationLoading = state.isPaginationLoading,
+        isEndReached = state.endReached,
+        onNearTop = {
+            onAction(ChatDetailAction.OnScrollToTop)
+        }
+    )
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -151,7 +213,7 @@ fun ChatDetailScreen(
                     isCornersRounded = configuration.isWideScreen,
                     modifier = Modifier.weight(1f).fillMaxWidth()
                 ) {
-                    if(state.chatUi == null) {
+                    if (state.chatUi == null) {
                         EmptySection(
                             title = stringResource(Res.string.no_chat_selected),
                             description = stringResource(Res.string.select_a_chat),
@@ -159,7 +221,14 @@ fun ChatDetailScreen(
                         )
                     } else {
 
-                        ChatHeader {
+                        ChatHeader(
+                            modifier = Modifier
+                                .onSizeChanged {
+                                    headerHeight = with(density) {
+                                        it.height.toDp()
+                                    }
+                                }
+                        ) {
                             ChatDetailHeader(
                                 modifier = Modifier.fillMaxWidth(),
                                 chatUi = state.chatUi,
@@ -199,6 +268,11 @@ fun ChatDetailScreen(
                             onDismissMessageMenu = {
                                 onAction(ChatDetailAction.OnDismissMessageMenu)
                             },
+                            isPaginationLoading = state.isPaginationLoading,
+                            paginationError = state.paginationError?.asString(),
+                            onRetryPagination = {
+                                onAction(ChatDetailAction.OnRetryPaginationClick)
+                            },
                             onDeleteMessageClick = { message ->
                                 onAction(ChatDetailAction.OnDeleteMessageClick(message))
                             }
@@ -223,7 +297,7 @@ fun ChatDetailScreen(
                         }
                     }
                 }
-                if(configuration.isWideScreen) {
+                if (configuration.isWideScreen) {
                     Spacer(Modifier.height(8.dp))
                 }
                 AnimatedVisibility(
@@ -243,6 +317,22 @@ fun ChatDetailScreen(
                         )
                     }
 
+                }
+            }
+            AnimatedVisibility(
+                visible = state.bannerState.isVisible,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(
+                        top = headerHeight + 16.dp,
+                    ),
+                enter = fadeIn(),
+                exit = fadeOut()
+            ) {
+                state.bannerState.formattedDate?.let {
+                    DateChip(
+                        date = state.bannerState.formattedDate.asString()
+                    )
                 }
             }
         }
@@ -280,6 +370,7 @@ private fun ChatDetailEmptyScreenPreview() {
             state = ChatDetailState(),
             isDetailPresent = false,
             onAction = {},
+            messageListState = rememberLazyListState(),
             snackBarState = remember { SnackbarHostState() }
         )
     }
@@ -312,7 +403,7 @@ private fun ChatDetailMessagesScreenPreview() {
                     lastMessageSenderUserName = "Sasuke Uchiha"
                 ),
                 messages = (1..10).map {
-                    if(it % 2 == 0) {
+                    if (it % 2 == 0) {
                         MessageUi.LocalUserMessage(
                             id = Uuid.random().toString(),
                             content = "Hello world!",
@@ -335,6 +426,7 @@ private fun ChatDetailMessagesScreenPreview() {
             ),
             isDetailPresent = true,
             onAction = {},
+            messageListState = rememberLazyListState(),
             snackBarState = remember { SnackbarHostState() }
         )
     }

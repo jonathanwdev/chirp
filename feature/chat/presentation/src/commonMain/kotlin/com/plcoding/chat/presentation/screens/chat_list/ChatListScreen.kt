@@ -42,6 +42,8 @@ import com.plcoding.core.designsystem.components.buttons.ChirpFloatingActionButt
 import com.plcoding.core.designsystem.components.dialogs.DestructiveConfirmationDialog
 import com.plcoding.core.designsystem.theme.ChirpTheme
 import com.plcoding.core.designsystem.theme.extended
+import com.plcoding.core.presentation.permissions.Permissions
+import com.plcoding.core.presentation.permissions.rememberPermissionController
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -84,6 +86,11 @@ fun ChatListScreen(
     onAction: (ChatListAction) -> Unit,
     snackBarHostState: SnackbarHostState
 ) {
+    val permissionController = rememberPermissionController()
+    LaunchedEffect(true) {
+        permissionController.requestPermission(Permissions.NOTIFICATIONS)
+    }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.extended.surfaceLower,
@@ -143,7 +150,6 @@ fun ChatListScreen(
                             .padding(horizontal = 8.dp)
                     )
                 }
-
                 else -> {
                     LazyColumn(
                         modifier = Modifier

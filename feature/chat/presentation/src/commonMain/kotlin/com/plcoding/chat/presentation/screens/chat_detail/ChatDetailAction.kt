@@ -11,8 +11,12 @@ sealed interface ChatDetailAction {
     data object OnChatMembersClick : ChatDetailAction
     data object OnLeaveChatClick : ChatDetailAction
     data object OnDismissMessageMenu : ChatDetailAction
+    data object OnRetryPaginationClick: ChatDetailAction
     data class OnSelectChat(val chatId: String?) : ChatDetailAction
     data class OnDeleteMessageClick(val message: MessageUi.LocalUserMessage) : ChatDetailAction
     data class OnMessageLongClick(val message: MessageUi.LocalUserMessage) : ChatDetailAction
     data class OnRetryClick(val message: MessageUi.LocalUserMessage) : ChatDetailAction
+    data class OnTopVisibleIndexChanged(val topVisibleIndex: Int) : ChatDetailAction
+    data class OnFirstVisibleIndexChanged(val index: Int) : ChatDetailAction
+    data object OnHideBanner : ChatDetailAction
 }

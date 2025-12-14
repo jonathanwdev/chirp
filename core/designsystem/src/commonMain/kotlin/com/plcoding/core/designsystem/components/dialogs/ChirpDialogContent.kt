@@ -24,6 +24,7 @@ fun ChirpDialogContent(
         Surface(
             modifier = modifier
                 .fillMaxWidth()
+                .heightIn(max = 540.dp)
                 .clip(RoundedCornerShape(16.dp)),
             color = MaterialTheme.colorScheme.surface
         ) {

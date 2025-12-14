@@ -4,6 +4,8 @@ import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import chirp.feature.chat.presentation.generated.resources.Res
+import chirp.feature.chat.presentation.generated.resources.today
 import com.plcoding.chat.domain.chat.ChatConnectionClient
 import com.plcoding.chat.domain.chat.ChatRepository
 import com.plcoding.chat.domain.message.MessageRepository
@@ -11,12 +13,14 @@ import com.plcoding.chat.domain.models.ChatMessage
 import com.plcoding.chat.domain.models.ConnectionState
 import com.plcoding.chat.domain.models.OutgoingNewMessage
 import com.plcoding.chat.presentation.mappers.toUi
+import com.plcoding.chat.presentation.mappers.toUiList
 import com.plcoding.chat.presentation.models.MessageUi
 import com.plcoding.core.domain.auth.SessionStorage
 import com.plcoding.core.domain.util.DataErrorException
 import com.plcoding.core.domain.util.Paginator
 import com.plcoding.core.domain.util.onFailure
 import com.plcoding.core.domain.util.onSuccess
+import com.plcoding.core.presentation.util.UiText
 import com.plcoding.core.presentation.util.toUiText
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
@@ -54,20 +58,20 @@ class ChatDetailViewModel(
 
     private val chatInfoFlow = _chatId
         .onEach { chatId ->
-            if(chatId != null) {
+            if (chatId != null) {
                 setPaginatorForChat(chatId)
             } else {
                 null
             }
         }
         .flatMapLatest { chatId ->
-            if(chatId != null) {
+            if (chatId != null) {
                 chatRepository.getChatInfoById(chatId)
             } else emptyFlow()
         }
     private val _state = MutableStateFlow(ChatDetailState())
 
-    private val canSendMessage = snapshotFlow { _state.value.messageTextFieldState.text.toString()  }
+    private val canSendMessage = snapshotFlow { _state.value.messageTextFieldState.text.toString() }
         .map { it.isBlank() }
         .combine(connectionClient.connectionState) { isMessageBlank, connectionState ->
             !isMessageBlank && connectionState == ConnectionState.CONNECTED
@@ -78,20 +82,20 @@ class ChatDetailViewModel(
         chatInfoFlow,
         sessionStorage.observeAuthInfo(),
     ) { currentState, chatInfo, sessionInfo ->
-        if(sessionInfo == null) {
+        if (sessionInfo == null) {
             return@combine ChatDetailState()
         }
         currentState.copy(
             chatUi = chatInfo.chat.toUi(sessionInfo.user.id),
-            messages = chatInfo.message.map { it.toUi(sessionInfo.user.id) }
+            messages = chatInfo.message.toUiList(sessionInfo.user.id)
         )
     }
 
     val state = _chatId
         .flatMapLatest { chatId ->
-            if(chatId != null) {
+            if (chatId != null) {
                 stateWithMessages
-            }else  {
+            } else {
                 _state
             }
         }
@@ -112,8 +116,6 @@ class ChatDetailViewModel(
     fun onAction(action: ChatDetailAction) {
         when (action) {
             is ChatDetailAction.OnSelectChat -> switchChat(action.chatId)
-            ChatDetailAction.OnBackClick -> {}
-            ChatDetailAction.OnChatMembersClick -> {}
             ChatDetailAction.OnChatOptionsClick -> onChatOptionsClick()
             is ChatDetailAction.OnDeleteMessageClick -> deleteMessage(action.message)
             ChatDetailAction.OnDismissChatOptions -> onDismissChatOptions()
@@ -121,22 +123,84 @@ class ChatDetailViewModel(
             ChatDetailAction.OnLeaveChatClick -> onLeaveChatClick()
             is ChatDetailAction.OnMessageLongClick -> onMessageLongClick(action.message)
             is ChatDetailAction.OnRetryClick -> retryMessage(action.message)
-            ChatDetailAction.OnScrollToTop -> {}
+            ChatDetailAction.OnScrollToTop -> onScrollToTop()
             ChatDetailAction.OnSendMessageClick -> sendMessage()
+            ChatDetailAction.OnRetryPaginationClick -> retryPagination()
+            ChatDetailAction.OnHideBanner -> hideBanner()
+            is ChatDetailAction.OnTopVisibleIndexChanged -> updateBanner(action.topVisibleIndex)
+            is ChatDetailAction.OnFirstVisibleIndexChanged -> updateNeatBottom(action.index)
             else -> Unit
         }
     }
 
-    private fun onMessageLongClick(message: MessageUi.LocalUserMessage) {
+    private fun updateNeatBottom(firstVisible: Int) {
         _state.update { it.copy(
-            messageWithOpenMenu = message
+            isNearBottom = firstVisible <= 3
         ) }
     }
 
-    private fun onDismissMessageMenu() {
+
+    private fun calculateBannerDateFromIndex(messages: List<MessageUi>, index: Int): UiText? {
+        if(messages.isEmpty() || index <= 0 || index >= messages.size) return null
+        val nearestSeparator = (index until messages.size)
+            .asSequence()
+            .mapNotNull { idx ->
+                val item = messages.getOrNull(idx)
+                if(item is MessageUi.DateSeparator) item.date else null
+            }
+            .firstOrNull()
+        return when(nearestSeparator) {
+            is UiText.Resource -> {
+                if(nearestSeparator.id == Res.string.today) null else nearestSeparator
+            }
+            else -> nearestSeparator
+        }
+    }
+
+    private fun updateBanner(topVisibleIndex: Int) {
+        val visibleDate = calculateBannerDateFromIndex(state.value.messages, topVisibleIndex)
         _state.update { it.copy(
-            messageWithOpenMenu = null
+            bannerState = BannerState(
+                formattedDate = visibleDate,
+                isVisible = visibleDate != null
+            )
         ) }
+    }
+
+
+    private fun hideBanner() {
+        _state.update {
+            it.copy(
+                bannerState = it.bannerState.copy(isVisible = false)
+            )
+        }
+    }
+
+    private fun retryPagination() = loadNextItems()
+
+
+    private fun onScrollToTop() = loadNextItems()
+
+    private fun loadNextItems() {
+        viewModelScope.launch {
+            currentPaginator?.loadNextItems()
+        }
+    }
+
+    private fun onMessageLongClick(message: MessageUi.LocalUserMessage) {
+        _state.update {
+            it.copy(
+                messageWithOpenMenu = message
+            )
+        }
+    }
+
+    private fun onDismissMessageMenu() {
+        _state.update {
+            it.copy(
+                messageWithOpenMenu = null
+            )
+        }
     }
 
     private fun deleteMessage(message: MessageUi.LocalUserMessage) {
@@ -162,7 +226,7 @@ class ChatDetailViewModel(
     private fun sendMessage() {
         val currentChatId = _chatId.value
         val content = state.value.messageTextFieldState.text.toString().trim()
-        if(content.isBlank() || currentChatId == null) return
+        if (content.isBlank() || currentChatId == null) return
         viewModelScope.launch {
             val message = OutgoingNewMessage(
                 chatId = currentChatId,
@@ -186,6 +250,7 @@ class ChatDetailViewModel(
             _state.update { it.copy(canSendMessage = canSend) }
         }.launchIn(viewModelScope)
     }
+
     private fun observerChatMessages() {
         val currentMessages = state
             .map { it.messages }
@@ -193,7 +258,7 @@ class ChatDetailViewModel(
 
         val newMessages = _chatId
             .flatMapLatest { chatId ->
-                if(chatId != null) {
+                if (chatId != null) {
                     messageRepository
                         .getMessagesForChat(chatId)
                 } else emptyFlow()
@@ -205,9 +270,14 @@ class ChatDetailViewModel(
             newMessages,
             isNearBottom
         ) { currentMessages, newMessages, isNearBottom ->
-            val lasNewId = newMessages.lastOrNull()?.message?.id
-            val currentId = currentMessages.lastOrNull()?.id
-            if(lasNewId != currentId) {
+            val newestMessageId = newMessages.firstOrNull()?.message?.id
+            val currentNewestId = currentMessages
+                .asSequence()
+                .filterNot { it is MessageUi.DateSeparator }
+                .firstOrNull()
+                ?.id
+
+            if (newestMessageId != null && newestMessageId != currentNewestId && isNearBottom) {
                 eventChannel.send(ChatDetailEvent.OnNewMessage)
             }
         }.launchIn(viewModelScope)
@@ -217,10 +287,8 @@ class ChatDetailViewModel(
         connectionClient
             .connectionState
             .onEach { connectionState ->
-                if(connectionState == ConnectionState.CONNECTED) {
-                    _chatId.value?.let {
-                        messageRepository.fetchMessages(it, before = null)
-                    }
+                if (connectionState == ConnectionState.CONNECTED) {
+                    currentPaginator?.loadNextItems()
                 }
                 _state.update {
                     it.copy(
@@ -244,25 +312,32 @@ class ChatDetailViewModel(
                 messages.minOfOrNull { it.createdAt }?.toString()
             },
             onError = { throwable ->
-                if(throwable is DataErrorException) {
-                    eventChannel.send(ChatDetailEvent.OnError(throwable.error.toUiText()))
+                if (throwable is DataErrorException) {
+                    _state.update {
+                        it.copy(
+                            paginationError = throwable.error.toUiText()
+                        )
+                    }
                 }
             },
             onSuccess = { messages, _ ->
-                _state.update { it.copy(
-                    endReached = messages.isEmpty(),
+                _state.update {
+                    it.copy(
+                        endReached = messages.isEmpty(),
+                        paginationError = null
 
-                ) }
+                    )
+                }
             }
 
         )
-        _state.update { it.copy(
-            endReached = false,
-            isPaginationLoading = false
-        ) }
-        viewModelScope.launch {
-            currentPaginator?.loadNextItems()
+        _state.update {
+            it.copy(
+                endReached = false,
+                isPaginationLoading = false
+            )
         }
+
     }
 
     private fun onLeaveChatClick() {
@@ -275,13 +350,15 @@ class ChatDetailViewModel(
                 .leaveChat(chatId)
                 .onSuccess {
                     _state.value.messageTextFieldState.clearText()
-
                     _chatId.update { null }
-                    _state.update { it.copy(
-                        chatUi = null,
-                        messages = emptyList(),
-                        bannerState = BannerState()
-                    ) }
+                    _state.update {
+                        it.copy(
+                            chatUi = null,
+                            messages = emptyList(),
+                            bannerState = BannerState()
+                        )
+                    }
+                    eventChannel.send(ChatDetailEvent.OnChatLeft)
                 }
                 .onFailure { error ->
                     eventChannel.send(ChatDetailEvent.OnError(error = error.toUiText()))
@@ -302,7 +379,7 @@ class ChatDetailViewModel(
     }
 
     private fun switchChat(chatId: String?) {
-        _chatId.update {  chatId }
+        _chatId.update { chatId }
         viewModelScope.launch {
             chatId?.let {
                 chatRepository

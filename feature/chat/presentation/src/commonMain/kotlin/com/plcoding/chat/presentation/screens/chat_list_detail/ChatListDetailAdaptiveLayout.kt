@@ -20,6 +20,7 @@ import com.plcoding.chat.presentation.screens.chat_detail.ChatDetailRoot
 import com.plcoding.chat.presentation.screens.chat_list.ChatListRoot
 import com.plcoding.chat.presentation.screens.create_chat.CreateChatRoot
 import com.plcoding.chat.presentation.screens.manage_chat.ManageChatRoot
+import com.plcoding.chat.presentation.screens.profile.ProfileRoot
 import com.plcoding.core.designsystem.theme.extended
 import com.plcoding.core.presentation.util.DialogSheetScopedViewModel
 import kotlinx.coroutines.launch
@@ -28,6 +29,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ChatListDetailAdaptiveLayout(
+    initialChatId: String?,
     onLogout: () -> Unit,
     chatListDetailViewModel: ChatListDetailViewModel = koinViewModel()
 ) {
@@ -38,6 +40,13 @@ fun ChatListDetailAdaptiveLayout(
         scaffoldDirective = scaffoldDirective
     )
     val scope = rememberCoroutineScope()
+
+    LaunchedEffect(initialChatId) {
+        if(initialChatId != null) {
+            chatListDetailViewModel.onAction(ChatListDetailAction.OnSelectChat(initialChatId))
+            scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
+        }
+    }
 
     BackHandler(enabled = scaffoldNavigator.canNavigateBack()) {
         scope.launch {
@@ -129,6 +138,16 @@ fun ChatListDetailAdaptiveLayout(
             onMembersAdded = {
                 chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissDialog)
             },
+            onDismiss = {
+                chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissDialog)
+            }
+        )
+    }
+
+    DialogSheetScopedViewModel(
+        visible = sharedState.dialogState is DialogState.Profile
+    ) {
+        ProfileRoot(
             onDismiss = {
                 chatListDetailViewModel.onAction(ChatListDetailAction.OnDismissDialog)
             }

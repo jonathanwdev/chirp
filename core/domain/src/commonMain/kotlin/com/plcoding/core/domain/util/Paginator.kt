@@ -17,22 +17,22 @@ class Paginator<Key, Item>(
 
     suspend fun loadNextItems() {
         if (isMakingRequest) return
-        if(currentKey != null && currentKey == lastRequestKey) return
+        if (currentKey != null && currentKey == lastRequestKey) return
 
         isMakingRequest = true
-        lastRequestKey = currentKey
         onLoadUpdated(true)
         try {
-            val result = onRequest(currentKey)
+            onRequest(currentKey)
                 .onSuccess { items ->
                     val newKey = getNextKey(items)
                     onSuccess(items, newKey)
+                    lastRequestKey = currentKey
                     currentKey = newKey
                 }
                 .onFailure { error ->
                     onError(DataErrorException(error))
                 }
-        }catch(err: Exception) {
+        } catch (err: Exception) {
             coroutineContext.ensureActive()
             onError(err)
         } finally {
