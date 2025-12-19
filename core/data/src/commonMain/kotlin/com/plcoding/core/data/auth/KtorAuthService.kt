@@ -4,6 +4,7 @@ import com.plcoding.core.data.dto.AuthInfoSerializable
 import com.plcoding.core.data.dto.requests.ChangePasswordRequestDTO
 import com.plcoding.core.data.dto.requests.EmailRequestDTO
 import com.plcoding.core.data.dto.requests.LoginRequestDTO
+import com.plcoding.core.data.dto.requests.RefreshRequestDTO
 import com.plcoding.core.data.dto.requests.RegisterRequestDTO
 import com.plcoding.core.data.dto.requests.ResetPasswordRequestDTO
 import com.plcoding.core.data.mappers.toDomain
@@ -15,7 +16,11 @@ import com.plcoding.core.domain.util.DataError
 import com.plcoding.core.domain.util.EmptyResult
 import com.plcoding.core.domain.util.Result
 import com.plcoding.core.domain.util.map
+import com.plcoding.core.domain.util.onSuccess
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.authProvider
+import io.ktor.client.plugins.auth.authProviders
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 
 class KtorAuthService(
     private val httpClient: HttpClient
@@ -100,5 +105,14 @@ class KtorAuthService(
                 newPassword = newPassword
             )
         )
+    }
+
+    override suspend fun logout(refreshToken: String): EmptyResult<DataError.Remote> {
+        return httpClient.post<RefreshRequestDTO, Unit>(
+            route = "/auth/logout",
+            body = RefreshRequestDTO(refreshToken)
+        ).onSuccess {
+            httpClient.authProvider<BearerAuthProvider>()?.clearToken()
+        }
     }
 }

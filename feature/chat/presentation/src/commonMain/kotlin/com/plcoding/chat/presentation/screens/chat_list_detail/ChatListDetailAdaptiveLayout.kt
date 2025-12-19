@@ -77,7 +77,7 @@ fun ChatListDetailAdaptiveLayout(
                             scaffoldNavigator.navigateTo(ListDetailPaneScaffoldRole.Detail)
                         }
                     },
-                    onConfirmLogoutClickClick = {
+                    onSuccessLogout = {
                         onLogout()
                     },
                     onCreateChatClick = {

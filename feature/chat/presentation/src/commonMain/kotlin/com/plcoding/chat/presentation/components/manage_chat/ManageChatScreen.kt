@@ -45,7 +45,7 @@ fun ManageChatScreen(
     val imeHeight = WindowInsets.ime.getBottom(LocalDensity.current)
     val isKeyboardVisible = imeHeight > 0
     val configuration = currentDeviceConfiguration()
-    val shouldHideHeader = configuration == DeviceConfiguration.MOBILE_LANDSCAPE || (isKeyboardVisible && configuration != DeviceConfiguration.DESKTOP) || isTextFieldFocused
+    val shouldHideHeader = configuration == DeviceConfiguration.MOBILE_LANDSCAPE && (isKeyboardVisible || isTextFieldFocused)
 
     Column(
         modifier = Modifier

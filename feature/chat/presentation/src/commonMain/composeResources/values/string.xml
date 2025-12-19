@@ -16,10 +16,12 @@
     <string name="save">Save</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
+    <string name="only_you">Only you</string>
     <string name="today_x">Today, %1$s</string>
     <string name="yesterday_x">Yesterday, %1$s</string>
     <string name="no_chat_selected">No chat selected</string>
     <string name="select_a_chat">Select a chat to start chatting!</string>
+    <string name="select_a_profile_picture">Select a profile picture</string>
     <string name="open_chat_options_menu">Open chat options menu</string>
     <string name="chat_members">Chat members</string>
     <string name="leave_chat">Leave chat</string>
@@ -34,6 +36,7 @@
     <string name="delete_for_everyone">Delete for everyone</string>
     <string name="no_chats">No chats</string>
     <string name="no_chats_subtitle">Create new chat to start messaging</string>
+    <string name="drop_picture_info">Drop your image here to upload as your new profile picture</string>
     <string name="no_messages">No messages</string>
     <string name="no_messages_subtitle">Be the first one to send a message!</string>
     <string name="do_you_want_to_logout">Do you want to log out?</string>
