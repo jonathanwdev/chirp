@@ -50,10 +50,12 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.jsystemthemedetector)
 
-//            implementation(compose.desktop.linux_x64)
-//            implementation(compose.desktop.linux_arm64)
+            implementation(compose.desktop.linux_x64)
+            implementation(compose.desktop.linux_arm64)
             implementation(compose.desktop.macos_x64)
             implementation(compose.desktop.macos_arm64)
+            implementation(compose.desktop.windows_x64)
+            implementation(compose.desktop.windows_arm64)
         }
 
     }
@@ -64,7 +66,7 @@ compose.desktop {
         mainClass = "com.plcoding.chirp.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
             packageName = "com.plcoding.chirp"
             packageVersion = "1.0.0"
         }
