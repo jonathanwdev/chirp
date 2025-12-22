@@ -50,12 +50,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.jsystemthemedetector)
 
-            implementation(compose.desktop.linux_x64)
-            implementation(compose.desktop.linux_arm64)
-            implementation(compose.desktop.macos_x64)
-            implementation(compose.desktop.macos_arm64)
-            implementation(compose.desktop.windows_x64)
-            implementation(compose.desktop.windows_arm64)
+
         }
 
     }
@@ -66,10 +61,35 @@ compose.desktop {
         mainClass = "com.plcoding.chirp.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb, TargetFormat.Exe)
-            packageName = "com.plcoding.chirp"
+            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            packageName = "chirp"
             packageVersion = "1.0.0"
+
+            modules(
+                "java.desktop",
+                "java.logging",
+                "java.prefs",
+                "java.sql",
+                "jdk.unsupported"
+            )
+
+            buildTypes.release.proguard {
+                isEnabled.set(true)
+                optimize.set(true)
+                obfuscate.set(true)
+                configurationFiles.from(project.file("compose-desktop.pro"))
+            }
         }
+
+        jvmArgs += listOf(
+            "-Xmx2g",
+            "--add-opens=java.base/sun.misc=ALL-UNNAMED",
+            "--add-opens=java.base/java.nio=ALL-UNNAMED",
+            "--add-opens=java.desktop/sun.awt=ALL-UNNAMED",
+            "--add-opens=java.desktop/sun.awt.wl=ALL-UNNAMED",
+            "--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED"
+        )
+
     }
 }
 
