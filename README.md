@@ -38,29 +38,18 @@
 <h2>Tablet</h2>
 <h3>Tablet Android chat</h3>
 
-[//]: # (![Tablet1]&#40;screenshot/tablet/tablet_1.png&#41;)
+![Tablet1](screenshot/tablet/tablet_1.png)
+![Tablet2](screenshot/tablet/tablet_2.png)
+![Tablet3](screenshot/tablet/tablet_3.png)
+![Tablet4](screenshot/tablet/tablet_4.png)
+![Tablet5](screenshot/tablet/tablet_5.png)
 
-[//]: # (![Tablet2]&#40;screenshot/tablet/tablet_2.png&#41;)
-
-[//]: # (![Tablet3]&#40;screenshot/tablet/tablet_3.png&#41;)
-
-[//]: # (![Tablet4]&#40;screenshot/tablet/tablet_4.png&#41;)
-
-[//]: # (![Tablet5]&#40;screenshot/tablet/tablet_5.png&#41;)
-
-[//]: # (## Desktop)
-
-[//]: # (### Desktop Mac, Linux and windows)
-
-[//]: # (![Desktop1]&#40;screenshot/desktop/desktop_1.png&#41;)
-
-[//]: # (![Desktop2]&#40;screenshot/desktop/desktop_2.png&#41;)
-
-[//]: # (![Desktop3]&#40;screenshot/desktop/desktop_3.png&#41;)
-
-[//]: # (![Desktop4]&#40;screenshot/desktop/desktop_4.png&#41;)
-
-[//]: # (![Desktop5]&#40;screenshot/desktop/desktop_5.png&#41;)
-
-[//]: # (![Desktop6]&#40;screenshot/desktop/vid.gif&#41;)
+## Desktop
+### Desktop Mac, Linux and windows
+![Desktop1](screenshot/desktop/desktop_1.png)
+![Desktop2](screenshot/desktop/desktop_2.png)
+![Desktop3](screenshot/desktop/desktop_3.png)
+![Desktop4](screenshot/desktop/desktop_4.png)
+![Desktop5](screenshot/desktop/desktop_5.png)
+![Desktop6](screenshot/desktop/vid.gif)
 
