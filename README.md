@@ -5,27 +5,35 @@
 
 ## Mobile Android/Ios
 ### Login
-![SplashMobile](screenshot/login/splash.png)
-![SignIn](screenshot/login/1.png)
-![SingUp](screenshot/login/2.png)
-![RecoverPassword](screenshot/login/3.png)
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+    <img src="screenshot/login/splash.png" alt="SplashMobile" width="200"/>
+    <img src="screenshot/login/1.png" alt="SignIn" width="200"/>
+    <img src="screenshot/login/2.png" alt="SingUp" width="200"/>
+    <img src="screenshot/login/3.png" alt="RecoverPassword" width="200"/>
+</div>
 <br>
 ### Chat
-![Chat1](screenshot/chat/chat_1.png)
-![Chat2](screenshot/chat/chat_2.png)
-![Chat3](screenshot/chat/chat_3.png)
-![Chat4](screenshot/chat/chat_4.png)
-![Chat5](screenshot/chat/chat_5.png)
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+    <img src="screenshot/chat/chat_1.png" alt="Chat1" width="200"/>
+    <img src="screenshot/chat/chat_2.png" alt="Chat2" width="200"/>
+    <img src="screenshot/chat/chat_3.png" alt="Chat3" width="200"/>
+    <img src="screenshot/chat/chat_4.png" alt="Chat4" width="200"/>
+    <img src="screenshot/chat/chat_5.png" alt="Chat5" width="200"/>
+</div>
 <br>
 ### NewChat
-![NewChat1](screenshot/newchat/newchat_1.png)
-![NewChat2](screenshot/newchat/newchat_2.png)
-![NewChat3](screenshot/newchat/newchat_3.png)
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+    <img src="screenshot/newchat/newchat_1.png" alt="NewChat1" width="200"/>
+    <img src="screenshot/newchat/newchat_2.png" alt="NewChat2" width="200"/>
+    <img src="screenshot/newchat/newchat_3.png" alt="NewChat3" width="200"/>
+</div>
 <br>
 ### Profile
-![Profile1](screenshot/profile/profile_1.png)
-![Profile2](screenshot/profile/profile_2.png)
-![Profile3](screenshot/profile/profile_3.png)
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+    <img src="screenshot/profile/profile_1.png" alt="Profile1" width="200"/>
+    <img src="screenshot/profile/profile_2.png" alt="Profile2" width="200"/>
+    <img src="screenshot/profile/profile_3.png" alt="Profile3" width="200"/>
+</div>
 <br>
 ## Tablet
 ### Tablet Android chat
