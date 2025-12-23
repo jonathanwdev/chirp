@@ -1,48 +1,45 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Desktop (JVM).
+# Chirp
+> That's a chat created with  Kotlin Multiplatform for Android Mobile/Tablet, Ios and Desktop with a modern design and clean architecture
+> 
+>
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+## Mobile Android/Ios
+### Login
+![SplashMobile](screenshot/login/splash.png)
+![SignIn](screenshot/login/1.png)
+![SingUp](screenshot/login/2.png)
+![RecoverPassword](screenshot/login/3.png)
+<br>
+### Chat
+![Chat1](screenshot/chat/chat_1.png)
+![Chat2](screenshot/chat/chat_2.png)
+![Chat3](screenshot/chat/chat_3.png)
+![Chat4](screenshot/chat/chat_4.png)
+![Chat5](screenshot/chat/chat_5.png)
+<br>
+### NewChat
+![NewChat1](screenshot/newchat/newchat_1.png)
+![NewChat2](screenshot/newchat/newchat_2.png)
+![NewChat3](screenshot/newchat/newchat_3.png)
+<br>
+### Profile
+![Profile1](screenshot/profile/profile_1.png)
+![Profile2](screenshot/profile/profile_2.png)
+![Profile3](screenshot/profile/profile_3.png)
+<br>
+## Tablet
+### Tablet Android chat
+![Tablet1](screenshot/tablet/tablet_1.png)
+![Tablet2](screenshot/tablet/tablet_2.png)
+![Tablet3](screenshot/tablet/tablet_3.png)
+![Tablet4](screenshot/tablet/tablet_4.png)
+![Tablet5](screenshot/tablet/tablet_5.png)
+## Desktop
+### Desktop Mac, Linux and windows
+![Desktop1](screenshot/desktop/desktop_1.png)
+![Desktop2](screenshot/desktop/desktop_2.png)
+![Desktop3](screenshot/desktop/desktop_3.png)
+![Desktop4](screenshot/desktop/desktop_4.png)
+![Desktop5](screenshot/desktop/desktop_5.png)
+![Desktop6](screenshot/desktop/vid.gif)
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
-
-### Build and Run Android Application
-
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
-
-### Build and Run Desktop (JVM) Application
-
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
-
-### Build and Run iOS Application
-
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
-
----
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
