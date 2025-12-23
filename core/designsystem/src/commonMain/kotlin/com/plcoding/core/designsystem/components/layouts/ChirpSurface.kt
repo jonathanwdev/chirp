@@ -26,7 +26,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun ChirpSurface(
     modifier: Modifier = Modifier,
     header: @Composable ColumnScope.() -> Unit = {},
-    content: @Composable ColumnScope.() -> Unit = {},
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     Surface(
         color = MaterialTheme.colorScheme.background,
