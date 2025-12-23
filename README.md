@@ -4,8 +4,11 @@
 >
 
 ## Mobile Android/Ios
-### Login
-<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+<div style="display: flex; flex-wrap: wrap; gap: 15px;">
+    <img src="screenshot/login/gif_mobile.gif" alt="Gif" width="400"/>
+</div>
+<h2>Login</h2>
+<div style="display: flex; flex-wrap: wrap; gap: 15px;">
     <img src="screenshot/login/splash.png" alt="SplashMobile" width="200"/>
     <img src="screenshot/login/1.png" alt="SignIn" width="200"/>
     <img src="screenshot/login/2.png" alt="SingUp" width="200"/>
@@ -13,7 +16,7 @@
 </div>
 <br/>
 <h3>Chat</h3>
-<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+<div style="display: flex; flex-wrap: wrap; gap: 15px;">
     <img src="screenshot/chat/chat_1.png" alt="Chat1" width="200"/>
     <img src="screenshot/chat/chat_2.png" alt="Chat2" width="200"/>
     <img src="screenshot/chat/chat_3.png" alt="Chat3" width="200"/>
@@ -22,14 +25,14 @@
 </div>
 <br/>
 <h3>NewChat</h3>
-<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+<div style="display: flex; flex-wrap: wrap; gap: 15px;">
     <img src="screenshot/newchat/newchat_1.png" alt="NewChat1" width="200"/>
     <img src="screenshot/newchat/newchat_2.png" alt="NewChat2" width="200"/>
     <img src="screenshot/newchat/newchat_3.png" alt="NewChat3" width="200"/>
 </div>
 <br/>
 <h3>Profile</h3>
-<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+<div style="display: flex; flex-wrap: wrap; gap: 15px;">
     <img src="screenshot/profile/profile_1.png" alt="Profile1" width="200"/>
     <img src="screenshot/profile/profile_2.png" alt="Profile2" width="200"/>
     <img src="screenshot/profile/profile_3.png" alt="Profile3" width="200"/>
