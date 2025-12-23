@@ -19,3 +19,4 @@ captures
 node_modules/
 build
 iosApp/iosApp/GoogleService-Info.plist
+composeApp/google-services.json
