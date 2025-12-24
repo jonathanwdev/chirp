@@ -1,7 +1,7 @@
 # Chirp
 >Chirp is a modern chat application built with Kotlin Multiplatform, designed to provide a seamless and robust communication experience across multiple platforms. Key features include:
 
-<div style="display: flex; justify-content: center; flex-direction: column; flex-wrap: wrap; gap: 15px;">
+<div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 15px;">
     <img src="screenshot/preview/gif_mobile.gif" alt="GifMobile" width="200"/>
     <img src="screenshot/preview/chat_preview_1.gif" alt="GifMobile" width="600"/>
 </div>
