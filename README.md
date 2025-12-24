@@ -3,10 +3,17 @@
 > 
 >
 
-## Mobile Android/Ios
+## Preview
 <div style="display: flex; flex-wrap: wrap; gap: 15px;">
-    <img src="screenshot/login/gif_mobile.gif" alt="Gif" width="400"/>
+    <img src="screenshot/preview/gif_mobile.gif" alt="GifMobilw" width="400"/>
 </div>
+
+![Preview1](screenshot/preview/chat_preview_1.gif)
+![Preview2](screenshot/preview/chat_preview_2.gif)
+![Preview3](screenshot/preview/chat_preview_3.gif)
+![Preview4](screenshot/preview/chat_preview_4.gif)
+
+## Mobile Android/Ios
 <h2>Login</h2>
 <div style="display: flex; flex-wrap: wrap; gap: 15px;">
     <img src="screenshot/login/splash.png" alt="SplashMobile" width="200"/>
